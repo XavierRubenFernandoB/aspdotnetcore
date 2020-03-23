@@ -1,0 +1,35 @@
+﻿<!--View Model-->
+@model NetCoreProj.ViewModels.HomeDetailsViewModel
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>
+        This is from DetailsView.cshtml from \Views\Home\DetailsView.cshtml
+    </h1>
+    <h2>@Model.vmPageTitle</h2>
+    <div>@Model.vmEmployee.Name</div>
+    <div>@Model.vmEmployee.Email</div>
+    <div>@Model.vmEmployee.Dept</div>
+</body>
+</html>
+
+<!--Strongly Typed View-->
+@*@model NetCoreProj.Models.Employee
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h1>
+            This is from DetailsView.cshtml from \Views\Home\DetailsView.cshtml
+        </h1>
+        <h2>@ViewBag.vbHeader</h2>
+        <div>@Model.Name</div>
+        <div>@Model.Email</div>
+        <div>@Model.Dept</div>
+    </body>
+    </html>*@
+
+

@@ -1,0 +1,33 @@
+﻿<!--List View-->
+@*\Views\_ViewImports.cshtml*@
+
+@model IEnumerable<MEmployee>
+@{
+    Layout = null;//1 Or Any Layout
+    ViewBag.Title = "Layout Title";
+}
+<h1>
+    This is from ListView.cshtml from \Views\Home\ListView.cshtml
+</h1>
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Dept</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Email</td>
+                <td>@employee.Dept</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script src="~/js/CustomJavascript.js"></script>
+}

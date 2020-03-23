@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div>
+        Header from Layout
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+    <div>
+        Footer from Layout
+    </div>
+    @if (IsSectionDefined("Scripts"))
+    {
+        @RenderSection("Scripts", required: true)
+    }
+</body>
+</html>

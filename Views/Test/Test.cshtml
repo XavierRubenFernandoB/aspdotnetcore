@@ -1,0 +1,19 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>
+        This is from Test.cshtml from Views\Test\Test.cshtml
+    </h1>
+    <h2>@ViewData["vdHeader"]</h2>
+
+    @{ 
+        var employee = ViewData["vdEmpDetails"] as NetCoreProj.Models.MEmployee;
+    }
+
+    <div>@employee.Name</div>
+    <div>@employee.Email</div>
+    <div>@employee.Dept</div>
+</body>
+</html>
