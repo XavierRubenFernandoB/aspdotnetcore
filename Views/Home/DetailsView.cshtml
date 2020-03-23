@@ -1,19 +1,54 @@
-﻿<!--View Model-->
+﻿<!--View Model with bootstrap-->
 @model NetCoreProj.ViewModels.HomeDetailsViewModel
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-    <h1>
-        This is from DetailsView.cshtml from \Views\Home\DetailsView.cshtml
-    </h1>
-    <h2>@Model.vmPageTitle</h2>
-    <div>@Model.vmEmployee.Name</div>
-    <div>@Model.vmEmployee.Email</div>
-    <div>@Model.vmEmployee.Dept</div>
-</body>
-</html>
+
+@{
+    ViewBag.Title = "Employee Details";
+    var photopath = "~/uploads/" + (Model.vmEmployee.PhotoPath ?? "netcore.png");
+}
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Model.vmEmployee.Name</h1>
+            </div>
+
+            <div class="card-body text-center">
+                <img class="card-img-top" src="@photopath" asp-append-version="true" />
+
+                <h4>Employee ID : @Model.vmEmployee.EmpID</h4>
+                <h4>Email : @Model.vmEmployee.Email</h4>
+                <h4>Department : @Model.vmEmployee.Dept</h4>
+
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="home" asp-action="listview" class="btn btn-primary">Back</a>
+                <a asp-controller="home" asp-action="editview" asp-route-id="@Model.vmEmployee.EmpID" class="btn btn-primary">Edit</a>
+                <a asp-controller="home" asp-action="deleteview" asp-route-id="@Model.vmEmployee.EmpID" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/CustomJavascript.js"></script>
+}
+
+<!--View Model without bootstrap-->
+@*@model NetCoreProj.ViewModels.HomeDetailsViewModel
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h1>
+            This is from DetailsView.cshtml from \Views\Home\DetailsView.cshtml
+        </h1>
+        <h2>@Model.vmPageTitle</h2>
+        <div>@Model.vmEmployee.Name</div>
+        <div>@Model.vmEmployee.Email</div>
+        <div>@Model.vmEmployee.Dept</div>
+    </body>
+    </html>*@
 
 <!--Strongly Typed View-->
 @*@model NetCoreProj.Models.Employee

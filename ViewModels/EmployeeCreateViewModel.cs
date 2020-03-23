@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using NetCoreProj.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreProj.Models
+namespace NetCoreProj.ViewModels
 {
-    public class MEmployee
+    public class EmployeeCreateViewModel
     {
-        [Key]
-        public int EmpID { get; set; }
         [Required]
         [MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters")]
         public string Name { get; set; }
@@ -18,6 +18,6 @@ namespace NetCoreProj.Models
         public string Email { get; set; }
         [Required]
         public eDept? Dept { get; set; }
-        public string PhotoPath { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

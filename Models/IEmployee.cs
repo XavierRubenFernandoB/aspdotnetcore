@@ -9,5 +9,8 @@ namespace NetCoreProj.Models
     {
         MEmployee GetEmployee(int EmpID);
         IEnumerable<MEmployee> GetAllEmployees();
+        MEmployee AddEmployee(MEmployee employee);
+        MEmployee UpdateEmployee(MEmployee employeechanges);
+        MEmployee DeleteEmployee(int EmpID);
     }
 }

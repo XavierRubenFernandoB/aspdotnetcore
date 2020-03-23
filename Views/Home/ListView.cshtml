@@ -1,33 +1,57 @@
-﻿<!--List View-->
+﻿<!--List View with bootstrap-->
+@model IEnumerable<MEmployee>
+
+@{
+    ViewBag.Title = "Employee List";
+}
+<div class="card-deck">
+    @foreach (var employee in Model)
+    {
+        var photopath = "~/uploads/" + (@employee.PhotoPath ?? "netcore.png");
+        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+            <div class="card-header">
+                <h3>@employee.Name</h3>
+            </div>
+            <img class="card-img-top imagethumbnail" src="@photopath" asp-append-version="true" />
+            <div class="card-footer text-center">
+                <a asp-controller="home" asp-action="detailsview" asp-route-id="@employee.EmpID" class="btn btn-primary m-1">View</a>
+                <a asp-controller="home" asp-action="editview" asp-route-id="@employee.EmpID" class="btn btn-primary m-1">Edit</a>
+                <a asp-controller="home" asp-action="deleteview" asp-route-id="@employee.EmpID" class="btn btn-danger m-1">Delete</a>
+            </div>
+        </div>
+    }
+</div>
+
+<!--List View without bootstrap-->
 @*\Views\_ViewImports.cshtml*@
 
-@model IEnumerable<MEmployee>
-@{
-    Layout = null;//1 Or Any Layout
-    ViewBag.Title = "Layout Title";
-}
-<h1>
-    This is from ListView.cshtml from \Views\Home\ListView.cshtml
-</h1>
-<table>
-    <thead>
-        <tr>
-            <td>Name</td>
-            <td>Email</td>
-            <td>Dept</td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var employee in Model)
-        {
+@*@model IEnumerable<MEmployee>
+    @{
+        Layout = null;//1 Or Any Layout
+        ViewBag.Title = "Layout Title";
+    }
+    <h1>
+        This is from ListView.cshtml from \Views\Home\ListView.cshtml
+    </h1>
+    <table>
+        <thead>
             <tr>
-                <td>@employee.Name</td>
-                <td>@employee.Email</td>
-                <td>@employee.Dept</td>
+                <td>Name</td>
+                <td>Email</td>
+                <td>Dept</td>
             </tr>
-        }
-    </tbody>
-</table>
-@section Scripts {
-    <script src="~/js/CustomJavascript.js"></script>
-}
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.Name</td>
+                    <td>@employee.Email</td>
+                    <td>@employee.Dept</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @section Scripts {
+        <script src="~/js/CustomJavascript.js"></script>
+    }*@

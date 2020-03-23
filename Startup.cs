@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreProj.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace NetCoreProj
 {
@@ -27,6 +29,11 @@ namespace NetCoreProj
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContextPool<AppDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDBConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                        .AddEntityFrameworkStores<AppDbContext>();
             //services.AddRazorPages();
 
             //Uses all MVC methods
@@ -38,7 +45,10 @@ namespace NetCoreProj
             //To get XML output
             //services.AddMvcCore(options => options.EnableEndpointRouting = false).AddXmlDataContractSerializerFormatters();
 
-            services.AddSingleton<IEmployee, MockIEmployee>();
+            //For in-memory
+            //services.AddTransient<IEmployee, MockIEmployee>();
+            //For SQL
+            services.AddScoped<IEmployee, SQLIEmployeeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +60,16 @@ namespace NetCoreProj
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                //NOT WORKING
+                //Error() in ErrorController will be called
+                //app.UseExceptionHandler("/Error");
+
+                //app.UseStatusCodePages();
+
+                //WORKING
+                //MyHttpStatusCodeHandler in ErrorController will be called
+                //app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
 
             //0
@@ -99,15 +118,25 @@ namespace NetCoreProj
             //app.UseStaticFiles();
 
             //4      
-            //app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            app.UseStaticFiles();
+            //app.UseMvcWithDefaultRoute();
 
-            app.Run(async (context) =>
+            //app.Run(async (context) =>
+            //{
+            //    //throw new Exception("This is my exception");
+            //    //await context.Response.WriteAsync("5");
+            //    await context.Response.WriteAsync(env.EnvironmentName);
+            //});
+
+            app.UseAuthentication();
+
+            app.UseMvc(routes =>
             {
-                //throw new Exception("This is my exception");
-                //await context.Response.WriteAsync("5");
-                await context.Response.WriteAsync(env.EnvironmentName);
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //not working
+            //app.UseMvc();
 
             //app.UseRouting();
             //app.UseAuthorization();
