@@ -14,7 +14,8 @@ using NetCoreProj.ViewModels;
 
 namespace NetCoreProj.Controllers
 {
-    public class HomeController : Controller
+    //my comments for branch testing
+    public class HomeController : Controller 
     {
         // GET: /<controller>/
 
