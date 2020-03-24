@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<IdentityUser> signinManager;
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -23,7 +25,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <a class="navbar-brand" asp-controller="home" asp-action="listview">
-                <img src="~/images/netcore.png" height="30" width="100"/>
+                <img src="~/images/netcore.png" height="30" width="100" />
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#mycollapsiblenavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -38,9 +40,25 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a asp-controller="account" asp-action="registerview" class="nav-link">Register</a>
-                    </li>
+                    @if (signinManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <form method="post" asp-controller="account" asp-action="logout">
+                                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto;">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="account" asp-action="registerview" class="nav-link">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="account" asp-action="loginview" class="nav-link">Login</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>

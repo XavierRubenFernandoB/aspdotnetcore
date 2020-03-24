@@ -34,7 +34,15 @@ namespace NetCoreProj
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                         .AddEntityFrameworkStores<AppDbContext>();
+
             //services.AddRazorPages();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = false;
+            }
+            );
 
             //Uses all MVC methods
             services.AddMvc(options => options.EnableEndpointRouting = false);
