@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreProj.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace NetCoreProj
 {
@@ -46,6 +48,16 @@ namespace NetCoreProj
 
             //Uses all MVC methods
             services.AddMvc(options => options.EnableEndpointRouting = false);
+
+            //Used to apply [Authorize] globally for for all Controllers in the Solution   
+            //Did not work. Hence commenting
+            //services.AddMvc(
+            //(
+            //    config => { var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            //                config.Filters.Add(new AuthorizeFilter(policy));
+            //    }
+            //)
+            //);
 
             //Uses only the Core MVC methods. (During usage of Views it fails) Using this temporarily because auto routing is not happening to Home Controller
             //services.AddMvcCore(options => options.EnableEndpointRouting = false);
@@ -140,7 +152,7 @@ namespace NetCoreProj
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Home}/{action=index}/{id?}");
             });
 
             //not working

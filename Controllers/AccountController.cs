@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreProj.ViewModels;
@@ -10,6 +11,7 @@ using NetCoreProj.ViewModels;
 
 namespace NetCoreProj.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
@@ -63,6 +65,40 @@ namespace NetCoreProj.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("listview", "home");
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        // GET: /<controller>/
+        public async Task<IActionResult> Login(LoginViewModel model, string returnurl)
+        {
+            if (ModelState.IsValid)
+            {
+                //Create the user
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+
+                //Success
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(returnurl))
+                    {
+                        return Redirect(returnurl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("listview", "home");
+                    }
+                }
+
+                //Failure
+               ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+            }
+            return View();
         }
     }
 }

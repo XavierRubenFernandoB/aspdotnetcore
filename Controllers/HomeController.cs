@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using NetCoreProj.ViewModels;
 
 namespace NetCoreProj.Controllers
 {
+    [Authorize]
     //my comments for branch testing
     public class HomeController : Controller 
     {
@@ -66,6 +68,7 @@ namespace NetCoreProj.Controllers
         //Attribute routing not working
         //[Route("Home/DetailsView/{id?}")]
         //To get XML output
+        [AllowAnonymous]
         public ViewResult DetailsView(int? id)
         {
             //throw new Exception("Error in details view");
@@ -117,6 +120,7 @@ namespace NetCoreProj.Controllers
         }
 
         //List View
+        [AllowAnonymous]
         public ViewResult Listview()
         {
             var model = _emp_repository.GetAllEmployees();
@@ -187,7 +191,6 @@ namespace NetCoreProj.Controllers
 
             return View(empeditvm);
         }
-
 
         [HttpPost]
         public IActionResult EditView(EmployeeEditViewModel model)
