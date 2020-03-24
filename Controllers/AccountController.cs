@@ -11,6 +11,7 @@ using NetCoreProj.ViewModels;
 
 namespace NetCoreProj.Controllers
 {
+    //test
     [AllowAnonymous]
     public class AccountController : Controller
     {
@@ -87,7 +88,7 @@ namespace NetCoreProj.Controllers
                 {
                     if (!string.IsNullOrEmpty(returnurl))
                     {
-                        return Redirect(returnurl);
+                        return LocalRedirect(returnurl);
                     }
                     else
                     {
