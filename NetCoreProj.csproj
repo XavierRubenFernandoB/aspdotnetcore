@@ -10,6 +10,8 @@
     <Compile Remove="Migrations\20200320095327_addphotopathcolumn.Designer.cs" />
     <Compile Remove="Migrations\20200322171535_addingidentity.cs" />
     <Compile Remove="Migrations\20200322171535_addingidentity.Designer.cs" />
+    <Compile Remove="Migrations\20200325162822_extend_identityUser.cs" />
+    <Compile Remove="Migrations\20200325162822_extend_identityUser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

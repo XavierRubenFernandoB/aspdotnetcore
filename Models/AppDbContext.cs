@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace NetCoreProj.Models
 {
-    public class AppDbContext : IdentityDbContext
+    //ApplicationUser is added for migration to be created successfully. Since it will refer to IdentityUser instead and create empty files during migration
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base (options)
         {

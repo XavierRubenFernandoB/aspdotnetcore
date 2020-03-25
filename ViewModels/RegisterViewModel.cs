@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NetCoreProj.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,7 @@ namespace NetCoreProj.ViewModels
         [Required]
         [EmailAddress]
         [Remote(controller:"account", action: "IsEmailInUse")]
+        [ValidEmailDomain(allowedmyDomain: "email.com", ErrorMessage = "Email Domain must be email.com")]
         public string Email { get; set; }
 
         [Required]
@@ -22,5 +24,7 @@ namespace NetCoreProj.ViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "Password & Confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public string City { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace NetCoreProj
             services.AddDbContextPool<AppDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDBConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                         .AddEntityFrameworkStores<AppDbContext>();
 
             //services.AddRazorPages();
