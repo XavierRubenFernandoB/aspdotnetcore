@@ -82,7 +82,7 @@ namespace NetCoreProj
             {
                 //NOT WORKING
                 //Error() in ErrorController will be called
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error");
 
                 //app.UseStatusCodePages();
 

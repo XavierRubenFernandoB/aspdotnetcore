@@ -180,6 +180,12 @@ namespace NetCoreProj.Controllers
         {
             MEmployee emp = _emp_repository.GetEmployee(id);
 
+            if (emp == null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFoundView", id);
+            }
+
             EmployeeEditViewModel empeditvm = new EmployeeEditViewModel
             {
                 EmpID = emp.EmpID,

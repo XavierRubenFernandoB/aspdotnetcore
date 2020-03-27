@@ -55,7 +55,7 @@ namespace NetCoreProj.Controllers
 
             _logger.LogError($"The path { exceptionHandlerPathFeature.Path } threw an exception " + $"{ exceptionHandlerPathFeature.Error }");
 
-            return View("ErrorView");
+            return View("Error");
         }
     }
 }
