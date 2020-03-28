@@ -49,11 +49,16 @@ namespace NetCoreProj
             //Uses all MVC methods
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
+            });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminRolePolicy",
-                            policy => policy.RequireClaim("Create Role").RequireClaim("Edit Role").RequireClaim("Delete Role")
-                            );
+                            policy => policy.RequireClaim("Create Role", "true").RequireClaim("Edit Role", "true").RequireClaim("Delete Role", "true")
+                            );           
 
                 options.AddPolicy("SuperAdminPolicy", 
                             policy => policy.RequireRole("Admin", "User", "Manager"));

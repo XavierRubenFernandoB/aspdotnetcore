@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<IdentityRole>
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authservice
+
 @{
     ViewBag.Title = "List Roles";
 }
@@ -22,18 +25,21 @@
             </div>
             <div class="card-footer">
                 <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                    <a asp-controller="administration" asp-action="editrole" asp-route-roleid="@role.Id" class="btn btn-primary">Edit</a>
+                    @if ((await authservice.AuthorizeAsync(User, "AdminRolePolicy")).Succeeded)
+                    {
+                        <a asp-controller="administration" asp-action="editrole" asp-route-roleid="@role.Id" class="btn btn-primary">Edit</a>
 
-                    <span id="confirmDeleteSpan_@role.Id" style="display:none">
-                        <span>Are you sure you want to delete?</span>
-                        <button type="submit" class="btn btn-danger">Yes</button>
-                        <a href="#" class="btn btn-primary"
-                           onclick="confirmDelete('@role.Id', false)">No</a>
-                    </span>
-                    <span id="deleteSpan_@role.Id">
-                        <a href="#" class="btn btn-danger"
-                           onclick="confirmDelete('@role.Id', true)">Delete</a>
-                    </span>
+                        <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                            <span>Are you sure you want to delete?</span>
+                            <button type="submit" class="btn btn-danger">Yes</button>
+                            <a href="#" class="btn btn-primary"
+                               onclick="confirmDelete('@role.Id', false)">No</a>
+                        </span>
+                        <span id="deleteSpan_@role.Id">
+                            <a href="#" class="btn btn-danger"
+                               onclick="confirmDelete('@role.Id', true)">Delete</a>
+                        </span>
+                    }
                 </form>
             </div>
         </div>
