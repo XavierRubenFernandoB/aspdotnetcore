@@ -49,6 +49,16 @@ namespace NetCoreProj
             //Uses all MVC methods
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminRolePolicy",
+                            policy => policy.RequireClaim("Create Role").RequireClaim("Edit Role").RequireClaim("Delete Role")
+                            );
+
+                options.AddPolicy("SuperAdminPolicy", 
+                            policy => policy.RequireRole("Admin", "User", "Manager"));
+            });
+
             //Used to apply [Authorize] globally for for all Controllers in the Solution   
             //Did not work. Hence commenting
             //services.AddMvc(
