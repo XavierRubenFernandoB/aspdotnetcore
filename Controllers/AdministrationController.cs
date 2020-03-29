@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreProj.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "RolesAdminPolicy")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -69,7 +69,7 @@ namespace NetCoreProj.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminRolePolicy")]
+        [Authorize(Policy = "RolesAdminPolicy")]
         public async Task<IActionResult> EditRole(string roleid)
         {
             var role = await roleManager.FindByIdAsync(roleid);
@@ -98,7 +98,7 @@ namespace NetCoreProj.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminRolePolicy")]
+        [Authorize(Policy = "RolesAdminPolicy")]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             var role = await roleManager.FindByIdAsync(model.RoleId);
@@ -306,7 +306,7 @@ namespace NetCoreProj.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminRolePolicy")]
+        [Authorize(Policy = "RolesAdminPolicy")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
@@ -351,6 +351,7 @@ namespace NetCoreProj.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "RolesAdminPolicy")]
         public async Task<IActionResult> ManageUserRoles(string userid)
         {
             var user = await userManager.FindByIdAsync(userid);

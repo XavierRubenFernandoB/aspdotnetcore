@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using NetCoreProj.Security;
 
 namespace NetCoreProj
 {
@@ -49,20 +50,48 @@ namespace NetCoreProj
             //Uses all MVC methods
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
+            //services.AddAuthentication().AddGoogle(options =>
+            //{
+            //    options.ClientId = "XXXXX";
+            //    options.ClientSecret = "YYYYY";
+            //});
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
             });
 
+            //AUTH : WITHOUT FUNC
+            /*
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminRolePolicy",
                             policy => policy.RequireClaim("Create Role", "true").RequireClaim("Edit Role", "true").RequireClaim("Delete Role", "true")
-                            );           
-
-                options.AddPolicy("SuperAdminPolicy", 
+                            );
+                options.AddPolicy("SuperAdminPolicy",
                             policy => policy.RequireRole("Admin", "User", "Manager"));
             });
+            */
+
+            //AUTH : WITH FUNC
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RolesAdminPolicy", policy =>
+                    policy.RequireAssertion(context => AuthorizeAccess(context)));
+            });
+
+            /*NOT WORKING AS INTENDED
+            //AUTH : WITH CUSTOM AUTHORIZATION
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RolesAdminPolicy", policy =>
+                    policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
+            });
+            // Register the first handler
+            services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
+            // Register the second handler
+            services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
+            */
 
             //Used to apply [Authorize] globally for for all Controllers in the Solution   
             //Did not work. Hence commenting
@@ -84,6 +113,20 @@ namespace NetCoreProj
             //services.AddTransient<IEmployee, MockIEmployee>();
             //For SQL
             services.AddScoped<IEmployee, SQLIEmployeeRepository>();
+        }
+
+        private bool AuthorizeAccess(AuthorizationHandlerContext context)
+        {
+            return  (
+                       context.User.IsInRole("Admin")
+                    && context.User.HasClaim(claim => claim.Type == "Create Role" && claim.Value == "true")
+                    && context.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")
+                    && context.User.HasClaim(claim => claim.Type == "Delete Role" && claim.Value == "true")
+                    )
+                    ||
+                    (
+                        context.User.IsInRole("SuperAdmin")
+                    );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
