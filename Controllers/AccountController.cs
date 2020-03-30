@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NetCoreProj.Models;
 using NetCoreProj.ViewModels;
 
@@ -18,11 +19,13 @@ namespace NetCoreProj.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger<AccountController> logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         //FOR CLIENT VALIDATION
@@ -65,16 +68,21 @@ namespace NetCoreProj.Controllers
                 //login
                 if (result.Succeeded) 
                 {
-                    // If the user is signed in and in the Admin role, then it is
-                    // the Admin user that is creating a new user. So redirect the
-                    // Admin user to ListRoles action
+                    //For email confirmation link
+                    var v_token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationlink = Url.Action("ConfirmEmail", "Account", new { userid = user.Id, token = v_token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, confirmationlink);
+
                     if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         return RedirectToAction("ListUsers", "Administration");
                     }
 
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("listview","home");
+                    ViewBag.ErrorTitle = "Registration successful";
+                    ViewBag.ErrorMessage = "Before you can Login, please confirm your " +
+                            "email, by clicking on the confirmation link we have emailed you";
+                    return View("Error");                    
                 }
 
                 //if error display on screen
@@ -84,6 +92,31 @@ namespace NetCoreProj.Controllers
                 }
             }
             return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The User ID {userId} is invalid";
+                return View("NotFound");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ErrorTitle = "Email cannot be confirmed";
+            return View("Error");
         }
 
         [HttpPost]
@@ -105,6 +138,15 @@ namespace NetCoreProj.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                //Password check done to ensure its not related to password & also avoid security hacks
+                if (user != null && !user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password))) 
+                {
+                    ModelState.AddModelError(string.Empty, "Email not confirmed yet");
+                    return View(model);
+                }
+
                 //Create the user
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 

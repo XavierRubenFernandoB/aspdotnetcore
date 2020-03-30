@@ -36,14 +36,17 @@ namespace NetCoreProj
                 options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDBConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                        .AddEntityFrameworkStores<AppDbContext>();
+                        .AddEntityFrameworkStores<AppDbContext>()
+                        .AddDefaultTokenProviders();
 
-            //services.AddRazorPages();
+            //services.AddRazorPages()
 
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireUppercase = false;
+
+                options.SignIn.RequireConfirmedEmail = true;//to enforce email confirmation during login
             }
             );
 
@@ -117,7 +120,7 @@ namespace NetCoreProj
 
         private bool AuthorizeAccess(AuthorizationHandlerContext context)
         {
-            return  (
+            return (
                        context.User.IsInRole("Admin")
                     && context.User.HasClaim(claim => claim.Type == "Create Role" && claim.Value == "true")
                     && context.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")
