@@ -37,7 +37,13 @@ namespace NetCoreProj
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                         .AddEntityFrameworkStores<AppDbContext>()
-                        .AddDefaultTokenProviders();
+                        .AddDefaultTokenProviders()
+                        .AddTokenProvider<CustomEmailConfirmationTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
+
+            // Set ALL token life span to 5 hours
+            services.Configure<DataProtectionTokenProviderOptions>(o => o.TokenLifespan = TimeSpan.FromHours(5));
+            // Override Email confirmation token life span to 3 days
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(o => o.TokenLifespan = TimeSpan.FromDays(3));
 
             //services.AddRazorPages()
 
@@ -47,6 +53,8 @@ namespace NetCoreProj
                 options.Password.RequireUppercase = false;
 
                 options.SignIn.RequireConfirmedEmail = true;//to enforce email confirmation during login
+
+                options.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation";//Custom email confirmation expiration time setting token
             }
             );
 
