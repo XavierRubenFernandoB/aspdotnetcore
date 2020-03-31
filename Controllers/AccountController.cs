@@ -148,7 +148,7 @@ namespace NetCoreProj.Controllers
                 }
 
                 //Create the user
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
 
                 //Success
                 if (result.Succeeded)
@@ -163,8 +163,14 @@ namespace NetCoreProj.Controllers
                     }
                 }
 
+                // If account is lockedout send the use to AccountLocked view
+                if (result.IsLockedOut)
+                {
+                    return View("AccountLocked");
+                }
+
                 //Failure
-               ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
             return View();
         }
@@ -237,6 +243,11 @@ namespace NetCoreProj.Controllers
                     var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
                     if (result.Succeeded)
                     {
+                        //To reset Lockout End date to current date & time inorder to prevent the user from waiting
+                        if (await userManager.IsLockedOutAsync(user))
+                        {
+                            await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                        }
                         return View("ResetPasswordConfirmation");
                     }
                     // Display validation errors. For example, password reset token already
@@ -253,6 +264,47 @@ namespace NetCoreProj.Controllers
                 return View("ResetPasswordConfirmation");
             }
             // Display validation errors if model state is not valid
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                // ChangePasswordAsync changes the user password
+                var result = await userManager.ChangePasswordAsync(user,
+                    model.CurrentPassword, model.NewPassword);
+
+                // The new password did not meet the complexity rules or
+                // the current password is incorrect. Add these errors to
+                // the ModelState and rerender ChangePassword view
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View();
+                }
+
+                // Upon successfully changing the password refresh sign-in cookie
+                await signInManager.RefreshSignInAsync(user);
+                return View("ChangePasswordConfirmation");
+            }
+
             return View(model);
         }
 

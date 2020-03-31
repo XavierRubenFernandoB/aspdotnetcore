@@ -55,6 +55,9 @@ namespace NetCoreProj
                 options.SignIn.RequireConfirmedEmail = true;//to enforce email confirmation during login
 
                 options.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation";//Custom email confirmation expiration time setting token
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             }
             );
 
