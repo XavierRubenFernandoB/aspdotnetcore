@@ -154,6 +154,7 @@ namespace NetCoreProj.Controllers
                 if (model.Photo != null)
                 {
                     string uploadFolderPath = ProcessUploadedFile(model);
+                    uniquefilename = uploadFolderPath;
                     //string uploadFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads");
                     //uniquefilename = Guid.NewGuid().ToString() + "-" + model.Photo.FileName;
                     //string filepath = Path.Combine(uploadFolderPath, uniquefilename);
